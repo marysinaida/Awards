@@ -1,0 +1,3 @@
+Hello {{name}}
+
+Welcome to the Project award newsletter you will find the most exciting projects.
