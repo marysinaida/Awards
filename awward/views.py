@@ -5,6 +5,7 @@ from .forms import ProjectsLetterForm
 from .email import send_welcome_email
 from django.contrib.auth.decorators import login_required
 from .forms import NewProjectForm, ProjectsLetterForm
+from django.http import JsonResponse
 import datetime as dt
 
 # Create your views here.
@@ -41,7 +42,7 @@ def projectsletter(request):
     name = request.POST.get('your_name')
     email = request.POST.get('email')
 
-    recipient = NewsLetterRecipients(name=name, email=email)
+    recipient = ProjectsLetterRecipients(name=name, email=email)
     recipient.save()
     send_welcome_email(name, email)
     data = {'success': 'You have been successfully added to mailing list'}
