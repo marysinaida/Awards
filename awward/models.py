@@ -49,3 +49,6 @@ class ProjectsLetterRecipients(models.Model):
         projects = cls.objects.filter(pub_date__date = date)
         return projects
 
+class MoringaMerch(models.Model):
+    name = models.CharField(max_length=40)
+    description = models.TextField()
