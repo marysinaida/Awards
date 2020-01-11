@@ -16,6 +16,10 @@ def index(request):
 
 def projects_today(request):
     date = dt.date.today()
+    projects = Project.todays_projects()
+    form = ProjectsLetterForm()
+    return render(request, 'today-projects.html', {"date": date, "projects": projects, "letterForm": form})
+
     if request.method == 'POST':
         form = ProjectsLetterForm(request.POST)
         if form.is_valid():
@@ -33,6 +37,17 @@ def projects_today(request):
     return render(request, 'today-projects.html', {"date": date, "project": project, "letterForm": form})
 
 
+def projectsletter(request):
+    name = request.POST.get('your_name')
+    email = request.POST.get('email')
+
+    recipient = NewsLetterRecipients(name=name, email=email)
+    recipient.save()
+    send_welcome_email(name, email)
+    data = {'success': 'You have been successfully added to mailing list'}
+    return JsonResponse(data)
+
+
 def past_days_projects(request, past_date):
 
     try:
@@ -47,7 +62,7 @@ def past_days_projects(request, past_date):
     if date == dt.date.today():
         return redirect(projects_of_day)
 
-    projects = Project.days_news(date)
+    projects = Project.days_projects(date)
 
     return render(request, 'past-projects.html', {"date": date, "projects": projects})
 
