@@ -1,7 +1,47 @@
 {%extends 'base.html'%}
 {% load bootstrap3 %}
-{% load staticfiles %}
+
 {% block content %}
 
-        <h1>Welcome to the project app.</h1>   
-{% endblock %}
+    <div class="container">
+        <!-- Looping through projects   -->
+        {% for projects_item in projects %}
+        <div class="row">
+    
+            <!-- Card Wider -->
+            <div class="card card-cascade wider">
+    
+                <h4 class="card-title"><strong>{{projects_item.title}}</strong></h4>
+    
+                <!-- Card image -->
+                <div>
+                    <img src="{{projects_item.project_image.url}}" class="img-responsive"alt="Image">
+                </div>
+    
+    
+                <!-- Title -->
+                <h4 class="card-title"><strong>{{projects_item.caption}}</strong></h4>
+    
+                <!-- Linkedin -->
+                <a class="px-2 fa-lg li-ic"><i class="fab fa-linkedin-in"></i></a>
+                <!-- Twitter -->
+                <a class="px-2 fa-lg tw-ic"><i class="fab fa-twitter"></i></a>
+                <!-- Dribbble -->
+                <a class="px-2 fa-lg fb-ic"><i class="fab fa-facebook-f"></i></a>
+    
+            </div>
+    
+        </div>
+       
+      {% endfor %}
+    
+    </div>
+    </div>
+    
+    <!-- Card Wider -->
+    <h1>Welcome to the project app.</h1>   
+    
+    {% endblock %}
+    
+
+        
