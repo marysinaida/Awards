@@ -3,45 +3,53 @@
 
 {% block content %}
 
-    <div class="container">
-        <!-- Looping through projects   -->
-        {% for projects_item in projects %}
-        <div class="row">
-    
-            <!-- Card Wider -->
-            <div class="card card-cascade wider">
-    
-                <h4 class="card-title"><strong>{{projects_item.title}}</strong></h4>
-    
-                <!-- Card image -->
-                <div>
-                    <img src="{{projects_item.project_image.url}}" class="img-responsive"alt="Image">
-                </div>
-    
-    
-                <!-- Title -->
-                <h4 class="card-title"><strong>{{projects_item.caption}}</strong></h4>
-    
-                <!-- Linkedin -->
-                <a class="px-2 fa-lg li-ic"><i class="fab fa-linkedin-in"></i></a>
-                <!-- Twitter -->
-                <a class="px-2 fa-lg tw-ic"><i class="fab fa-twitter"></i></a>
-                <!-- Dribbble -->
-                <a class="px-2 fa-lg fb-ic"><i class="fab fa-facebook-f"></i></a>
-    
-            </div>
-    
-        </div>
-       
-      {% endfor %}
-    
-    </div>
-    </div>
-    
-    <!-- Card Wider -->
-    <h1>Welcome to the project app.</h1>   
-    
-    {% endblock %}
-    
+<h1>Welcome to the project app.</h1>
 
-        
+<div class="container-fluid" style="margin-top: 77px;">
+    <h1 class="text-center" style="font-family: 'Creepster', cursive;">Projects</h1>
+    <div class="row">
+        {% for project in projects %}
+        {% with go=image.allinfo %}
+        <div class="col-xs-6 col-sm-6 col-md-4 card" style="padding-top:1%;margin-top:1%;">
+            <img src="{{project.project_image.url}}" class="img-responsive" alt="Image" style="height:300px;width:100%;"
+                type="button" class="btn btn-sm btn-outline-primary" id="image{{image.id}}" data-whatever="{{image.id}}"
+                data-toggle="modal" data-target="#extraModal{{project.id}}">
+            <h5 class="text-center"> {{ project.caption }} </h5>
+            <p class="text-center"><strong>By: </strong> {{ project.author.username}} </p>
+        </div>
+        {%endwith%}
+        {% empty %}
+        <h3 class="text-center">There No Projects</h3>
+        {% endfor %}
+    </div>
+</div>
+{% for project in projects %}
+<div class="modal fade" id="extraModal{{project.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable ">
+        <div class="modal-content " style="background-color: #ECECEC;width:600px;">
+            <div class="modal-header">
+                <p class="text-center modal-title" id="imagetitle"><strong>By: </strong> {{ project.author.username}}
+                </p>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <img style="height: 400px; width: 500px;" id="image" class=" rounded text-center"
+                    src='{{project.project_image.url}}'> </div>
+            <div class="modal-body" style="text-align:center">
+                <p id="imageCaption">{{ project.caption }}</p>
+            </div>
+            <div class="modal-footer">
+                <a href="{{project.project_link}}" class="btn btn-success" target="_blank">View project</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+</div>
+</div>
+
+
+
+{% endblock %}
