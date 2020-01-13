@@ -1,5 +1,6 @@
 {%extends 'base.html'%}
 {% load bootstrap3 %}
+{% load static %}
 
 {% block content %}
 {{block.super}}
@@ -37,7 +38,7 @@
             <a class="px-2 fa-lg li-ic"><i class="fab fa-linkedin-in"></i></a>
             <!-- Twitter -->
             <a class="px-2 fa-lg tw-ic"><i class="fab fa-twitter"></i></a>
-            <!-- Dribbble -->
+         <!-- Dribbble -->
             <a class="px-2 fa-lg fb-ic"><i class="fab fa-facebook-f"></i></a>
 
         </div>
@@ -45,7 +46,7 @@
     </div>
     {% empty %}
   <div class="row">
-    <h2 class="text-center">There No News Items</h2>
+    <h2 class="text-center">Subscribe to be abel to post.</h2>
   </div>
   {% endfor %}
 
