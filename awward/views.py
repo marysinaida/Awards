@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from .models import Project
 from .forms import ProjectsLetterForm
@@ -9,30 +9,32 @@ from django.http import JsonResponse
 import datetime as dt
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import  MoringaMerch
+from .models import MoringaMerch
 from .serializer import MerchSerializer
+from rest_framework import status
+from .permissions import IsAdminOrReadOnly
 
 
 # Create your views here.
 
 
 def index(request):
-    return render(request, 'index.html')
+    projects = Project.get_projects()
+    return render(request, 'index.html', {'projects':projects})
 
 
 def projects_today(request):
     date = dt.date.today()
-    projects = Project.todays_projects()
     form = ProjectsLetterForm()
-    return render(request, 'today-projects.html', {"date": date, "projects": projects, "letterForm": form})
+    return render(request, 'today-projects.html', {"date": date, "project": project, "letterForm": form})
 
     if request.method == 'POST':
         form = ProjectsLetterForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['your_name']
             email = form.cleaned_data['email']
-            
-            recipient = ProjectsLetterRecipients(name =name , email = email)
+
+            recipient = ProjectsLetterRecipients(name=name, email=email)
             recipient.save()
             send_welcome_email(name, email)
 
@@ -98,7 +100,7 @@ def project(request, project_id):
 @login_required(login_url='/accounts/login/')
 def new_project(request):
     current_user = request.user
-    if request.method =='POST':
+    if request.method == 'POST':
         form = NewProjectForm(request.POST, request.FILES)
         if form.is_valid():
             project = form.save(commit=False)
@@ -108,4 +110,47 @@ def new_project(request):
 
     else:
         form = NewProjectForm()
-    return render(request,'new_project.html',{"form":form})
+    return render(request, 'new_project.html', {"form": form})
+
+
+class MerchList(APIView):
+    def get(self, request, format=None):
+        all_merch = MoringaMerch.objects.all()
+        permission_classes = (IsAdminOrReadOnly,)
+        serializers = MerchSerializer(all_merch, many=True)
+        return Response(serializers.data)
+
+    def post(self, request, format=None):
+        serializers = MerchSerializer(data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data, status=status.HTTP_201_CREATED)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MerchDescription(APIView):
+    permission_classes = (IsAdminOrReadOnly,)
+    def get_merch(self, pk):
+        try:
+            return MoringaMerch.objects.get(pk=pk)
+        except MoringaMerch.DoesNotExist:
+            return Http404
+
+    def get(self, request, pk, format=None):
+        merch = self.get_merch(pk)
+        serializers = MerchSerializer(merch)
+        return Response(serializers.data)
+
+    def put(self, request, pk, format=None):
+        merch = self.get_merch(pk)
+        serializers = MerchSerializer(merch, request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data)
+        else:
+            return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        merch = self.get_merch(pk)
+        merch.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
