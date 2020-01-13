@@ -20,7 +20,22 @@ from .permissions import IsAdminOrReadOnly
 
 def index(request):
     projects = Project.get_projects()
-    return render(request, 'index.html', {'projects':projects})
+    return render(request, 'index.html', {'projects': projects})
+
+
+def profile(request):
+    # image = request.user.profile.posts.all()
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        prof_form = UpdateUserProfileForm(
+            request.POST, request.FILES, instance=request.user.profile)
+        if user_form.is_valid() and prof_form.is_valid():
+            user_form.save()
+            prof_form.save()
+            return HttpResponseRedirect(request.path_info)
+            return render(request, 'profile.html', {})
+
+    return render(request, 'profile.html', {})
 
 
 def projects_today(request):
@@ -127,8 +142,10 @@ class MerchList(APIView):
             return Response(serializers.data, status=status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class MerchDescription(APIView):
     permission_classes = (IsAdminOrReadOnly,)
+
     def get_merch(self, pk):
         try:
             return MoringaMerch.objects.get(pk=pk)
@@ -153,4 +170,3 @@ class MerchDescription(APIView):
         merch = self.get_merch(pk)
         merch.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
