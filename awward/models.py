@@ -33,6 +33,11 @@ class Project(models.Model):
     def search_by_title(cls, search_term):
         projects = cls.objects.filter(title__icontains=search_term)
         return projects
+    
+    @classmethod
+    def get_projects(cls):
+        projects = cls.objects.all()
+        return projects
 
 
 class ProjectsLetterRecipients(models.Model):
