@@ -14,6 +14,7 @@ urlpatterns=[
     url(r'^archives/(\d{4}-\d{2}-\d{2})/$',views.past_days_projects,name = 'pastprojects'),
     url(r'^ajax/projectsletter/$', views.projectsletter, name='projectsletter'),
     url(r'^api/projects/$', views.ProjectList.as_view()),
+    url(r'^api/profile/$', views.ProfileList.as_view()),
     url(r'api/merch/merch-id/(?P<pk>[0-9]+)/$',
         views.MerchDescription.as_view())
 
