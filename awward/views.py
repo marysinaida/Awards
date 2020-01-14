@@ -104,9 +104,9 @@ def past_days_projects(request, past_date):
 
 def search_results(request):
 
-    if 'project' in request.GET and request.GET["project"]:
+    if 'projects' in request.GET and request.GET["projects"]:
         search_term = request.GET.get("projects")
-        searched_projects = Project.search_by_title(search_term)
+        searched_projects = Projects.search_by_title(search_term)
         message = f"{search_term}"
 
         return render(request, 'search.html', {"message": message, "projects": searched_projects})
