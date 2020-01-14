@@ -103,6 +103,7 @@ def past_days_projects(request, past_date):
 
 
 def search_results(request):
+    
 
     if 'projects' in request.GET and request.GET["projects"]:
         search_term = request.GET.get("projects")
