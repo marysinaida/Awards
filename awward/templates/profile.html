@@ -1,37 +1,40 @@
 {%extends "registration/base.html"%}
 {% load bootstrap3 %}
 {% block content %}
-<div class="container" style="margin-top:8rem">
-
-    <div class="row ">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h4>{{profile.user.username}}</h4><a href="" class="btn btn-sm btn-success"
-                        style="float:right">Edit Profile</a>
-                </div>
-                <div class="card-body">
-                    <img src="{{ profile.photo.url}}" alt="{{profile.user.username}}" class=" img-responsive img-fluid "
-                        style="width:200px;height:200px; border-radius:50%;">
-
-                </div>
-                <div class="card-text">
-                    <h3 class="text-center">Bio:</h3>
-                    <p>{{ profile.bio }}</p>
-                </div>
+{{block.super}}
+<div class="container text-center">
+    <div class="card bg-light" style="margin-top:5%;padding-top: 3%;padding-bottom: 3%;">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3">
+                {%if user.profile.profile_photo%}
+                <img class="rounded-circle" src="{{user.profile.profile_photo.url}}" style="height:200px;width: 200px;"
+                    alt="No profile pic">
+                {%else%}
+                <p>No profile picture!</p>
+                {%endif%}
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-3">
+                <strong style="font-size:25px;">{{current_user.username | title}}</strong>
+                <a href='/updateprofile' class="btn btn-primary text-white">Edit profile</a>
+                {%if user.profile.bio %}
+                <p style="font-size:23px;"><strong>Bio:</strong> {{user.profile.bio}}</p>
+                {%else%}
+                <p>No bio!</p>
+                {%endif%}
             </div>
         </div>
-        
+    </div>
     <div class="row">
-
-        {% for image in images%}
-        <div class="col-md-3">
-            <img src="{{ image.image.url}}" alt="" class="img-responsive img-fluid">
+        {% for project in projects %}
+        {%if project.user.username == current_user.username%}
+        <div class="col-xs-6 col-sm-6 col-md-4 card" style="padding-top:1%;margin-top:1%;padding-bottom:1%;">
+            <img src="{{project.project_image.url}}" class="img-responsive" alt="Image" style="height:300px;width:100%;"
+                type="button" class="btn btn-sm btn-outline-primary" id="post{{post.id}}" data-whatever="{{post.id}}"
+                data-toggle="modal" data-target="#extraModal{{post.id}}">
         </div>
+        {%endif%}
         {% endfor %}
     </div>
+
 </div>
-
-
-
-{% endblock %}
+{%endblock%}

@@ -1,16 +1,17 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from .models import Project
+from .models import Projects, Profile
 from .forms import ProjectsLetterForm
 from .email import send_welcome_email
 from django.contrib.auth.decorators import login_required
-from .forms import NewProjectForm, ProjectsLetterForm
+from .forms import NewProjectForm, ProjectsLetterForm, ProfileForm
 from django.http import JsonResponse
 import datetime as dt
 from rest_framework.response import Response
+from rest_framework import generics
 from rest_framework.views import APIView
 from .models import MoringaMerch
-from .serializer import MerchSerializer
+from .serializer import ProjectSerializer,ProfileSerializer
 from rest_framework import status
 from .permissions import IsAdminOrReadOnly
 
@@ -19,23 +20,34 @@ from .permissions import IsAdminOrReadOnly
 
 
 def index(request):
-    projects = Project.get_projects()
+    projects = Projects.get_projects()
     return render(request, 'index.html', {'projects': projects})
 
 
 def profile(request):
-    # image = request.user.profile.posts.all()
-    if request.method == 'POST':
-        user_form = UpdateUserForm(request.POST, instance=request.user)
-        prof_form = UpdateUserProfileForm(
-            request.POST, request.FILES, instance=request.user.profile)
-        if user_form.is_valid() and prof_form.is_valid():
-            user_form.save()
-            prof_form.save()
-            return HttpResponseRedirect(request.path_info)
-            return render(request, 'profile.html', {})
+    current_user = request.user
+    projects = Projects.get_projects()
+    return render(request, 'profile.html', {'current_user': current_user, 'projects': projects})
 
-    return render(request, 'profile.html', {})
+
+@login_required(login_url='/login/')
+def update_profile(request):
+    current_user = request.user
+    profile = Profile(user=request.user)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES,
+                           instance=request.user.profile)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = current_user
+            profile.save()
+        return redirect('index')
+    else:
+        form = ProfileForm(instance=request.user.profile)
+        args = {}
+        # args.update(csrf(request))
+        args['form'] = form
+    return render(request, 'update_profile.html', {'current_user': current_user, 'form': form})
 
 
 def projects_today(request):
@@ -170,3 +182,12 @@ class MerchDescription(APIView):
         merch = self.get_merch(pk)
         merch.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProjectList(generics.ListAPIView):
+    queryset = Projects.objects.all()
+    serializer_class = ProjectSerializer
+
+class ProfileList(generics.ListAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer

@@ -22,11 +22,12 @@ class Author(models.Model):
         ordering = ['first_name']
 
 
-class Project(models.Model):
+class Projects(models.Model):
     title = models.CharField(max_length=60)
     post = HTMLField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     caption = models.CharField(max_length=150)
+    project_link = models.CharField(max_length=250)
     pub_date = models.DateTimeField(auto_now_add=True)
     project_image = models.ImageField(upload_to='projects/', blank=True)
 
@@ -43,7 +44,7 @@ class Project(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,)
-    profile_photo = models.ImageField(upload_to='posts/')
+    profile_photo = models.ImageField(upload_to='profile/')
     bio = models.TextField(max_length=255)
 
     def save_profile(self):

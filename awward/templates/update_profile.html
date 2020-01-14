@@ -1,0 +1,14 @@
+{%extends 'base.html'%}
+{%block content%}
+{{block.super}}
+<div class="container text-center">
+    <div class="card" style="margin-top:5%;">
+        <h1 class="card-header">Update Profile</h1>
+        <form enctype="multipart/form-data" method="POST" action="" class="card-body">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" class='btn btn-primary' value="Update" />
+        </form>
+    </div>
+</div>
+{%endblock%}
