@@ -17,7 +17,6 @@ This is an app that allows users to like post and comment on other people posts.
 | ------------------- | ----------------------------- | ----------------------------- |
 | User visits the app and gets redirected to the login page  | User logs in | Directed to the home page where they see posted photos | 
 If user has no account, they click on `sign up` | User signs up | User is redirected to the log in page |
-|  Home page loads | click to rate  | Rting count appear|
 |  Homepage loads | Click `profile` | User's profile appears | 
 | Homepage loads | Click `upload image` icon | User's redirected to a page where they can upload an image | 
 | Homepage loads | Click `settings` icon | A modal appears where one can change their password or logout | 
